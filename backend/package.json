@@ -5,9 +5,8 @@
   "license": "MIT",
   "author": "",
   "type": "module",
-  "main": "server.js",
   "scripts": {
-    "dev": "node --watch server.js",
+    "dev": "node --watch src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

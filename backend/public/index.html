@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">  
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chat App</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        #status-bar {
+            display: flex;
+            align-items: center;
+        }
+
+        #status-bar > :last-child { 
+            margin-left: auto; 
+        }
+
+        #chat-head {
+            text-align: center;
+        }
+
+        #user-profile, #user-form {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header id="status-bar">
+        <div>
+            Users Online: <span id="users-online">0</span>
+        </div>
+        <div>
+            <span id="status" class="connecting">Connecting...</span>
+        </div>
+    </header>
+
+    <hr>
+
+    <section id="chat-head">
+        <h1>Chat App</h1>
+
+        <div id="user-profile">
+            <p>Welcome <strong id="user-name"></strong>! Enjoy our chat room!</p>
+            <br>
+            <p><a href="#" id="leave-btn">&laquo; Leave</a></p>
+        </div>
+
+        <form id="user-form">
+            <input id="join-name" autocomplete="off" placeholder="User Name..." maxlength="20" required />
+            <button id="join-btn">Join</button>
+        </form>
+    </section>
+
+    <section id="chat-body">
+    </section>
+
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
