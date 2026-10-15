@@ -4,38 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Chat App</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 10px;
-        }
-
-        p {
-            margin: 0;
-        }
-
-        #status-bar {
-            display: flex;
-            align-items: center;
-        }
-
-        #status-bar > :last-child { 
-            margin-left: auto; 
-        }
-
-        #chat-head {
-            text-align: center;
-        }
-
-        #user-profile, #user-form {
-            display: none;
-        }
-    </style>
+    <link href="/css/style.css" rel="stylesheet">
 </head>
 <body>
     <header id="status-bar">
         <div>
-            Users Online: <span id="users-online">0</span>
+            Users Online: <span id="users-online"></span>
         </div>
         <div>
             <span id="status" class="connecting">Connecting...</span>

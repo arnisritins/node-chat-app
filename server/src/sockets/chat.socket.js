@@ -1,27 +1,15 @@
-import express from 'express';
-import { Server } from 'socket.io';
-
-const port = 3000;
-const app = express();
-
-app.use(express.static('public'));
-
-const server = app.listen(port, () => {
-    console.log(`App listening on port ${port}`);
-});
-
-const io = new Server(server);
-
 const sockets = new Map();
 const users = new Map();
 
-io.on('connection', (socket) => {
+const diconnectTimeout = 5000;
+
+function registerChatSocket(io, socket) {
 
     socket.emit('info', users.size);
 
     socket.on('join', (user) => {
 
-        var existing = users.get(user.id);
+        let existing = users.get(user.id);
 
         if (existing) {
             if (existing.disconnectTimer) {
@@ -45,7 +33,7 @@ io.on('connection', (socket) => {
 
         sockets.set(socket.id, user.id);
 
-        broadcast();
+        broadcast(io);
     });
 
     socket.on('leave', () => {
@@ -57,7 +45,7 @@ io.on('connection', (socket) => {
         users.delete(userId);
         sockets.delete(socket.id);
 
-        broadcast();
+        broadcast(io);
     });
 
     socket.on('disconnect', () => {
@@ -76,11 +64,13 @@ io.on('connection', (socket) => {
             users.delete(user.id);
             sockets.delete(socket.id);
 
-            broadcast();
-        }, 5000);
+            broadcast(io);
+        }, diconnectTimeout);
     });
-});
+}
 
-function broadcast() {
+function broadcast(io) {
     io.emit('info', users.size);
 }
+
+export { registerChatSocket }

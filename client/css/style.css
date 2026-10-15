@@ -1,0 +1,25 @@
+body {
+    margin: 0;
+    padding: 10px;
+}
+
+p {
+    margin: 0;
+}
+
+#status-bar {
+    display: flex;
+    align-items: center;
+}
+
+#status-bar > :last-child { 
+    margin-left: auto; 
+}
+
+#chat-head {
+    text-align: center;
+}
+
+#user-profile, #user-form {
+    display: none;
+}
