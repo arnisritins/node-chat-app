@@ -1,69 +1,52 @@
-const sockets = new Map();
-const users = new Map();
+import { chatStore as store } from '../stores/chat.store.js';
 
 const DISCONNECT_TIMEOUT = 5000;
 
-function getUserById(userId) {
-    return users.get(userId) || null;
+function getUsersOnline() {
+    return store.getUsersCount();
 }
 
-function getUserBySocketId(socketId) {
-    const userId = sockets.get(socketId) || null;
-
-    if (userId === null)
-        return null;
-
-    return getUserById(userId);
-}
-
-function getOnlineCount() {
-    return users.size;
-}
-
-function joinUser(user, socketId) {
-    let existing = getUserById(user.id);
+function joinChat(user, socketId) {
+    const existing = store.getUserById(user.id);
 
     if (existing !== null) {
         clearDisconnectTimer(existing);
-        removeSocket(existing.socketId);
+
+        // Remove old socket on re-connect
+        store.removeSocket(existing.socketId);
 
         existing.socketId = socketId;
         existing.online = true;
-    } else {
-        users.set(user.id, {
-            id: user.id,
-            name: user.name,
-            socketId: socketId,
-            online: true,
-            disconnectTimer: null
-        });
+
+        // Re-link user with new socket
+        store.upsertUser(existing);
+
+        return;
     }
 
-    sockets.set(socketId, user.id);
+    // New user
+    store.upsertUser({
+        id: user.id,
+        name: user.name,
+        socketId: socketId,
+        online: true,
+        disconnectTimer: null
+    });
 }
 
-function removeUser(userId) {
-    users.delete(userId);
-}
-
-function removeSocket(socketId) {
-    sockets.delete(socketId);
-}
-
-function leaveUser(socketId) {
-    const user = getUserBySocketId(socketId);
+function leaveChat(socketId) {
+    const user = store.getUserBySocketId(socketId);
 
     if (user === null)
         return;
 
     clearDisconnectTimer(user);
 
-    removeUser(user.id);
-    removeSocket(socketId)
+    store.removeUser(user);
 }
 
-function handleDisconnect(socketId, timeoutCallback) {
-    const user = getUserBySocketId(socketId)
+function disconnectChat(socketId, timeoutCallback) {
+    const user = store.getUserBySocketId(socketId)
 
     if (user === null)
         return;
@@ -71,10 +54,10 @@ function handleDisconnect(socketId, timeoutCallback) {
     user.online = false;
 
     user.disconnectTimer = setTimeout(() => {
-        removeUser(user.id);
-        removeSocket(socketId);
 
-        if (timeoutCallback) {
+        store.removeUser(user);
+
+        if (timeoutCallback !== undefined) {
             timeoutCallback();
         }
 
@@ -89,8 +72,8 @@ function clearDisconnectTimer(user) {
 }
 
 export {
-    joinUser,
-    leaveUser,
-    getOnlineCount,
-    handleDisconnect
+    getUsersOnline,
+    joinChat,
+    leaveChat,
+    disconnectChat
 };

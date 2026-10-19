@@ -1,28 +1,28 @@
-import { joinUser, leaveUser, getOnlineCount, handleDisconnect } from '../services/chat.service.js';
+import { joinChat, leaveChat, getUsersOnline, disconnectChat } from '../services/chat.service.js';
 
 function registerChatSocket(io, socket) {
 
-    socket.emit('info', getOnlineCount());
+    socket.emit('info', getUsersOnline());
 
     socket.on('join', (user) => {
-        joinUser(user, socket.id);
-        broadcast(io);
+        joinChat(user, socket.id);
+        broadcastOnlineUsers(io);
     });
 
     socket.on('leave', () => {
-        leaveUser(socket.id);
-        broadcast(io);
+        leaveChat(socket.id);
+        broadcastOnlineUsers(io);
     });
 
     socket.on('disconnect', () => {
-        handleDisconnect(socket.id, () => {
-            broadcast(io);
+        disconnectChat(socket.id, () => {
+            broadcastOnlineUsers(io);
         });
     });
 }
 
-function broadcast(io) {
-    io.emit('info', getOnlineCount());
+function broadcastOnlineUsers(io) {
+    io.emit('info', getUsersOnline());
 }
 
 export { registerChatSocket }
