@@ -64,6 +64,10 @@ function disconnectChat(socketId, timeoutCallback) {
     }, DISCONNECT_TIMEOUT);
 }
 
+function getUser(userId) {
+    return store.getUserById(userId);
+}
+
 function clearDisconnectTimer(user) {
     if (user.disconnectTimer) {
         clearTimeout(user.disconnectTimer);
@@ -72,6 +76,7 @@ function clearDisconnectTimer(user) {
 }
 
 export {
+    getUser,
     getUsersOnline,
     joinChat,
     leaveChat,

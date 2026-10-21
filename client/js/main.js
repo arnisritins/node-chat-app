@@ -7,9 +7,12 @@
     const userForm = document.getElementById('user-form');
     const userProfile = document.getElementById('user-profile');
 
-    const input = document.getElementById('join-name');
+    const nameInput = document.getElementById('join-name');
     const joinBtn = document.getElementById('join-btn');
     const leaveBtn = document.getElementById('leave-btn');
+    const messageInput = document.getElementById('chat-input');
+    const messages = document.getElementById('messages');
+    const messagrForm = document.querySelector('.message-form')
 
     let user = getCurrentUser();
 
@@ -17,6 +20,7 @@
 
     joinBtn.addEventListener("click", joinChat);
     leaveBtn.addEventListener("click", leaveChat);
+    messageInput.addEventListener("keyup", onInputChange);
 
     socket.on('info', (count) => {
         updateCount(count);
@@ -34,11 +38,19 @@
         updateStatus(-1);
     });
 
+    socket.on('message', (message) => {
+        const msg = document.createElement('div');
+
+        msg.textContent = `${message.name}: ${message.text}`;
+        messages.appendChild(msg);
+
+        scrollToBottom();
+    });
 
     function joinChat(e) {
         e.preventDefault();
 
-        let name = input.value.trim();
+        let name = nameInput.value.trim();
 
         if (name) {
             user = {
@@ -46,7 +58,7 @@
                 name: name,
             };
 
-            input.value = '';
+            nameInput.value = '';
 
             storeUser();
             render();
@@ -66,16 +78,38 @@
         render();
     }
 
+    function sendMessage() {
+        let message = messageInput.value.trim();
+
+        if (message) {
+            messageInput.value = '';
+            socket.emit('message', user.id, message);
+        }
+    }
+
+    function onInputChange(e) {
+        if (e.key === 'Enter' || e.keyCode === 13) {
+            sendMessage();
+        }
+    }
+
+    function scrollToBottom() {
+        messages.scrollTop = messages.scrollHeight;
+    }
+
     function render() {
         if (user) {
             document.getElementById('user-name').textContent = user.name;
 
             userForm.style.display = 'none';
             userProfile.style.display = 'block';
-            
+            messagrForm.style.display = 'block';
+
+            scrollToBottom();
         } else {
             userForm.style.display = 'block';
             userProfile.style.display = 'none';
+            messagrForm.style.display = 'none';
         }
     }
 

@@ -7,36 +7,31 @@
     <link href="/css/style.css" rel="stylesheet">
 </head>
 <body>
-    <header id="status-bar">
-        <div>
-            Users Online: <span id="users-online"></span>
-        </div>
-        <div>
-            <span id="status" class="connecting">Connecting...</span>
-        </div>
-    </header>
+    <div class="app">
+        <header class="header">
+            <div class="status">
+                <p>Users Online: <span id="users-online"></span></p>
+                <p>Status: <span id="status" class="connecting">Connecting...</span></p>
+            </div>
+            <div class="profile">
+                <div id="user-profile">
+                    <p>Welcome <strong id="user-name"></strong>! Enjoy our chat room!</p>
+                    <p><a href="#" id="leave-btn">&laquo; Leave</a></p>
+                </div>
+                <form id="user-form">
+                    <input type="text" id="join-name" autocomplete="off" placeholder="User Name..." maxlength="20" required />
+                    <button id="join-btn">Join</button>
+                </form>
+            </div>
+        </header>
 
-    <hr>
+        <section class="messages" id="messages"></section>
 
-    <section id="chat-head">
-        <h1>Chat App</h1>
+        <footer class="message-form">
+            <textarea name="message" id="chat-input" maxlength="200" placeholder="Type your message..."></textarea>
+        </footer>
+    </div>
 
-        <div id="user-profile">
-            <p>Welcome <strong id="user-name"></strong>! Enjoy our chat room!</p>
-            <br>
-            <p><a href="#" id="leave-btn">&laquo; Leave</a></p>
-        </div>
-
-        <form id="user-form">
-            <input id="join-name" autocomplete="off" placeholder="User Name..." maxlength="20" required />
-            <button id="join-btn">Join</button>
-        </form>
-    </section>
-
-    <section id="chat-body">
-    </section>
-
-    <!-- Scripts -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/main.js"></script>
 </body>
